@@ -48,13 +48,22 @@
       b.classList.toggle("is-active", on);
       b.setAttribute("aria-checked", on);
     });
-    var off = Math.round((1 - k.price / k.from) * 100);
-    $("#offerOff").innerHTML = off + "%<small>OFF</small>";
+    var inst = k.inst != null ? k.inst : k.price / n;
+    var save = k.from - k.price;
+    var off = save > 0 ? Math.round((1 - k.price / k.from) * 100) : 0;
+    var offerOff = $("#offerOff");
+    offerOff.innerHTML = off + "%<small>OFF</small>";
+    offerOff.hidden = off <= 0;
     renderStage(k);
-    $("#priceFrom").textContent = "De " + brl(k.from);
-    $("#priceInst").textContent = brl(k.price / n);
+    var priceFrom = $("#priceFrom");
+    priceFrom.textContent = "De " + brl(k.from);
+    priceFrom.hidden = save <= 0;
+    $("#priceTimes").textContent = n + "x de";
+    $("#priceInst").textContent = brl(inst);
     $("#priceCash").textContent = brl(k.price);
-    $("#priceSave").textContent = "Economize " + brl(k.from - k.price);
+    var priceSave = $("#priceSave");
+    priceSave.textContent = "Economize " + brl(save);
+    priceSave.hidden = save <= 0;
     var buy = $("#buyBtn");
     buy.href = k.url || "#";
     if (k.url) { buy.target = "_blank"; buy.rel = "noopener"; }
@@ -70,7 +79,7 @@
       (k.tag ? '<span class="kit__tag">' + k.tag + "</span>" : "") +
       '<span class="kit__radio"></span>' +
       '<span class="kit__info"><b>' + k.title + "</b><small>" + k.size + "</small></span>" +
-      '<span class="kit__price"><s>' + brl(k.from) + "</s><b>" + brl(k.price) + "</b></span>";
+      '<span class="kit__price">' + (k.from > k.price ? "<s>" + brl(k.from) + "</s>" : "") + "<b>" + brl(k.price) + "</b></span>";
     b.addEventListener("click", function () { select(k.id); });
     kitsEl.appendChild(b);
   });
